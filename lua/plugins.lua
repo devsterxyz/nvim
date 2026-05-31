@@ -28,35 +28,63 @@ require("lazy").setup({
     "nvim-treesitter/nvim-treesitter",
     branch = "master",
     build = ":TSUpdate",
+
+    dependencies = {
+      "nvim-treesitter/nvim-treesitter-textobjects",
+    },
+
     config = function()
+        require("nvim-treesitter-textobjects")
         require("nvim-treesitter.configs").setup({
             ensure_installed = {
-                "c",
-                "lua",
-                "vim",
-                "vimdoc",
-                "query",
-                "javascript",
-                "typescript",
-                "cpp"
-            },
+          "c",
+          "cpp",
+          "lua",
+          "vim",
+          "vimdoc",
+          "query",
+          "javascript",
+          "typescript",
+        },
 
-            auto_install = true,
+        auto_install = true,
 
-            highlight = {
-                enable = true,
+        highlight = {
+          enable = true,
+        },
+
+        incremental_selection = {
+          enable = true,
+          keymaps = {
+            init_selection = "<leader>ss",
+            node_incremental = "<leader>si",
+            scope_incremental = "<leader>sc",
+            node_decremental = "<leader>sd",
+          },
+        },
+
+        textobjects = {
+          select = {
+            enable = true,
+            lookahead = true,
+
+            keymaps = {
+              ["af"] = "@function.outer",
+              ["if"] = "@function.inner",
+              ["ac"] = "@class.outer",
+              ["ic"] = {query = "@class.inner", desc = "Select inner part of class region"},
+              ["as"] = {query = "@scope", query_group = "locals", desc = "Select language scope"}
             },
-            incremental_selection = {
-                enable = true,
-                keymaps = {
-                    init_selection = "<Leader>ss", 
-                    node_incremental = "<Leader>si",
-                    scope_incremental = "<Leader>sc",
-                    node_decremental = "<Leader>sd",
-                },
+            selection_modes = {
+                ['@parameter.outer'] = 'v',
+                ['@function.outer'] = 'V',
+                ['@class.outer'] = '<c-v>',
             },
-        })
-    end
+            include_surrounding_whitespace = true,
+          },
+        },
+      })
+    end,
   },
 }, {
   performance = {
